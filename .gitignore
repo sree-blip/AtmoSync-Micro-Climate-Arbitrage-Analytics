@@ -1,0 +1,27 @@
+# Git ignore file for AtmoSync-Micro-Climate-Arbitrage-Analytics
+
+# Python Virtual Environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# dbt Artifacts & Logs
+target/
+dbt_packages/
+dbt_modules/
+logs/
+*.log
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,3 +1,7 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
 # Git ignore file for AtmoSync-Micro-Climate-Arbitrage-Analytics
 
 # Python Virtual Environment

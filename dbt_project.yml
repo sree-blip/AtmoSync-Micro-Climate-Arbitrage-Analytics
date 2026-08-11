@@ -1,0 +1,28 @@
+# Name of your dbt project
+name: 'atmosync_dbt'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which profile to use from profiles.yml
+profile: 'atmosync_profile'
+
+# Paths for various dbt folders
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Configuring model folders and default materializations
+models:
+  atmosync_dbt:
+    +materialized: view
+    staging:
+      +schema: staging
+    marts:
+      +schema: marts

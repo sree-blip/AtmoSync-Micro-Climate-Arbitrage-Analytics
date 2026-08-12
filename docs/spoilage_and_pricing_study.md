@@ -21,14 +21,19 @@ Where:
 - $k_T$: Temperature sensitivity coefficient ($0.08$)
 - $k_H$: Humidity sensitivity coefficient ($0.02$)
 
-### Quality Degradation over Time
-The remaining quality index ($Q_t$, bounded between $1.0$ and $0.0$) of the avocados at time $t$ is modeled as:
+### Quality Degradation over Time (Discrete Interval Accumulation)
+To implement this in dbt/SQL over telemetry events, degradation is accumulated incrementally for each specific telemetry time interval ($\Delta t$ in hours). 
 
-$$Q_t = Q_0 - \int_{0}^{t} (\text{Base Decay Rate} \cdot M_{\text{decay}}) \, dt$$
+The quality index $Q_t$ at time $t$ is calculated from the previous interval's quality $Q_{t-1}$ as:
+
+$$Q_t = \max\left(0, \min\left(1, Q_{t-1} - \text{Base Decay Rate} \cdot M_{\text{decay}} \cdot \Delta t\right)\right)$$
 
 Where:
-- $Q_0$: Initial quality score (typically $1.0$ at harvest/loading)
-- $\text{Base Decay Rate}$: $0.005$ per hour (yielding a maximum optimal shelf life of ~200 hours)
+- $Q_0$: Initial quality score (defaults to $1.0$ at shipment start)
+- $\Delta t$: Elapsed time in hours since the previous telemetry log
+- $\text{Base Decay Rate}$: $0.005$ per hour
+- Bounding logic ($\max(0, \min(1, \dots))$) is strictly enforced so that $Q_t \in [0.0, 1.0]$.
+
 
 ### Quality Grade Mapping
 At any given arrival time, the quality score maps to a price tier:
@@ -46,7 +51,7 @@ To calculate margins, the container telemetry must be joined with a destination 
 | :--- | :--- | :--- |
 | `market_id` | `VARCHAR` | Unique identifier for each destination market |
 | `market_name` | `VARCHAR` | City/Location name (e.g., Chicago, New York) |
-| `transit_hours` | `INTEGER` | Est. transit hours from current position to this market |
+| `transit_hours` | `INTEGER` | Remaining transit hours from the container's current position to this candidate market |
 | `price_premium` | `DECIMAL(10,2)`| USD price per box for Premium quality grade |
 | `price_standard`| `DECIMAL(10,2)`| USD price per box for Standard quality grade |
 | `price_substandard`| `DECIMAL(10,2)`| USD price per box for Substandard quality grade |
@@ -58,11 +63,11 @@ To calculate margins, the container telemetry must be joined with a destination 
 
 Arbitrage evaluates whether the financial benefit of diverting a container to an alternative market exceeds the additional transportation and administrative costs.
 
-$$\text{Value}_{\text{original}} = \text{Quantity} \cdot \text{Price}(\text{Original Market}, Q_{\text{original\_arrival}})$$
+$$\text{Value}_{\text{original}} = \text{Quantity} \cdot \text{Price}(\text{Original Market}, Q_{\text{original}})$$
 
-$$\text{Value}_{\text{rerouted}} = \text{Quantity} \cdot \text{Price}(\text{Reroute Market}, Q_{\text{reroute\_arrival}}) - \text{Rerouting Cost}$$
+$$\text{Value}_{\text{rerouted}} = \text{Quantity} \cdot \text{Price}(\text{Reroute Market}, Q_{\text{rerouted}}) - \text{Rerouting Cost}$$
 
 $$\text{Spoilage Arbitrage} = \text{Value}_{\text{rerouted}} - \text{Value}_{\text{original}}$$
 
 ### Decision Rule:
-* If **$\text{Spoilage Arbitrage} > \$500$** (threshold), generate a rerouting alert on the dashboard.
+* If **Spoilage Arbitrage > $500** (threshold), generate a rerouting alert on the dashboard.

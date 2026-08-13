@@ -10,17 +10,12 @@ The IoT container sensors stream telemetry records matching the following JSON s
 
 ```json
 {
-  "container_id": "CONT-1002",
-  "timestamp": "2026-08-13T14:30:00Z",
-  "sensor_readings": {
-    "temperature": 8.4,
-    "humidity": 87.5,
-    "vibration": 0.15
-  },
-  "coordinates": {
-    "latitude": 34.0522,
-    "longitude": -118.2437
-  }
+  "sequence_id": 49950,
+  "sensor_id": "SENSOR_003",
+  "timestamp": "2026-08-13T06:48:02.837218+00:00",
+  "temperature": 31.14,
+  "humidity": 51.62,
+  "vibration": 1.612
 }
 ```
 
@@ -28,32 +23,30 @@ The IoT container sensors stream telemetry records matching the following JSON s
 
 ## 2. Staging Table Schema (`stg_telemetry`)
 
-The raw JSON payload will be loaded into a Snowflake raw table as a `VARIANT` column type. The following SQL mapping extracts and cleans the nested JSON fields:
+The raw JSON payload will be loaded into a Snowflake raw table as a `VARIANT` column type. The following SQL mapping extracts and cleans the flat JSON fields:
 
 | Raw JSON Key | Target SQL Column | SQL Data Type | Cleaning & Mapping Rule |
 | :--- | :--- | :--- | :--- |
-| `container_id` | `container_id` | `VARCHAR` | Cast to string. |
-| `timestamp` | `reading_time` | `TIMESTAMP` | Convert string ISO-8601 to standard UTC timestamp. |
-| `sensor_readings.temperature`| `temperature_c` | `FLOAT` | Extract from nested object and cast to float. |
-| `sensor_readings.humidity` | `humidity_pct` | `FLOAT` | Extract from nested object and cast to float. |
-| `sensor_readings.vibration` | `vibration_g` | `FLOAT` | Extract from nested object and cast to float. |
-| `coordinates.latitude` | `latitude` | `FLOAT` | Extract location coordinates. |
-| `coordinates.longitude` | `longitude` | `FLOAT` | Extract location coordinates. |
+| `sequence_id` | `sequence_id` | `INTEGER` | Extract sequential log ID. |
+| `sensor_id` | `sensor_id` | `VARCHAR` | Cast to string (identifies container sensor). |
+| `timestamp` | `reading_time` | `TIMESTAMP` | Convert ISO-8601 string to standard UTC timestamp. |
+| `temperature` | `temperature_c` | `FLOAT` | Cast to float. |
+| `humidity` | `humidity_pct` | `FLOAT` | Cast to float. |
+| `vibration` | `vibration_g` | `FLOAT` | Cast to float. |
 
 ---
 
 ## 3. Reference Extraction SQL (Snowflake)
 
-To parse the raw JSON data in the dbt model, the SQL will query the JSON variant column (e.g., `raw_payload`):
+To parse the raw JSON data in the dbt model, the SQL will query the flat JSON keys directly from the variant column (e.g., `raw_payload`):
 
 ```sql
 SELECT
-    raw_payload:container_id::VARCHAR AS container_id,
+    raw_payload:sequence_id::INTEGER AS sequence_id,
+    raw_payload:sensor_id::VARCHAR AS sensor_id,
     TO_TIMESTAMP(raw_payload:timestamp::VARCHAR) AS reading_time,
-    raw_payload:sensor_readings.temperature::FLOAT AS temperature_c,
-    raw_payload:sensor_readings.humidity::FLOAT AS humidity_pct,
-    raw_payload:sensor_readings.vibration::FLOAT AS vibration_g,
-    raw_payload:coordinates.latitude::FLOAT AS latitude,
-    raw_payload:coordinates.longitude::FLOAT AS longitude
+    raw_payload:temperature::FLOAT AS temperature_c,
+    raw_payload:humidity::FLOAT AS humidity_pct,
+    raw_payload:vibration::FLOAT AS vibration_g
 FROM {{ source('raw', 'raw_container_telemetry') }}
 ```

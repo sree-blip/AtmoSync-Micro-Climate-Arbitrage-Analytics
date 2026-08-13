@@ -12,3 +12,9 @@
 - Studied and documented avocado spoilage decay curve equations.
 - Defined schemas and mapping fields for commodity pricing dataset joins.
 - Formulated the Spoilage Arbitrage decision-making rule and logic.
+
+## Day 3
+- Defined the structure for raw telemetry IoT JSON payload data.
+- Established clean target schemas for the Snowflake staging tables (`stg_telemetry`).
+- Mapped JSON paths to specific SQL data types (vibration, temperature, humidity, coordinates).
+- Documented dbt/Snowflake extraction SQL syntax in `docs/raw_to_clean_mapping.md`.

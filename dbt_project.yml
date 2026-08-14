@@ -26,3 +26,12 @@ models:
       +schema: staging
     marts:
       +schema: marts
+
+# Project-wide variables for decay math and business logic thresholds
+vars:
+  spoilage_arbitrage_threshold: 500.00
+  opt_temp: 5.0
+  opt_humidity: 85.0
+  k_t: 0.08
+  k_h: 0.02
+  base_decay_rate: 0.005

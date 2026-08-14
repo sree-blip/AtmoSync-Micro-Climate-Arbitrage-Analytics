@@ -19,3 +19,9 @@
 - Mapped JSON paths to specific SQL data types (sequence ID, sensor ID, temperature, humidity, vibration).
 - Aligned the mapping schema with the actual sensor simulation payload structure pushed to the streaming branch.
 - Documented dbt/Snowflake extraction SQL syntax in `docs/raw_to_clean_mapping.md`.
+
+## Day 4
+- Configured project-wide variables in `dbt_project.yml` for spoilage decay equations and arbitrage threshold.
+- Created `packages.yml` to import the standard `dbt-utils` library dependency.
+- Wrote custom macro `generate_schema_name.sql` to override Snowflake schema suffixes.
+- Ran `dbt deps` successfully to download and lock dbt package dependencies.

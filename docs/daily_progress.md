@@ -25,3 +25,8 @@
 - Created `packages.yml` to import the standard `dbt-utils` library dependency.
 - Wrote custom macro `generate_schema_name.sql` to override Snowflake schema suffixes.
 - Ran `dbt deps` successfully to download and lock dbt package dependencies.
+
+## Day 5
+- Created dbt source configuration `models/staging/sources.yml` defining the raw telemetry database schema.
+- Built the initial dbt staging SQL model `models/staging/stg_telemetry.sql` to clean and cast the raw variant JSON.
+

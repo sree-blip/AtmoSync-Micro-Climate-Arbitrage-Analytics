@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    database: RAW
+    schema: TELEMETRY
+    tables:
+      - name: raw_container_telemetry
+        description: Raw JSON telemetry log records streamed from the IoT container sensors.

@@ -30,3 +30,6 @@
 - Created dbt source configuration `models/staging/sources.yml` defining the raw telemetry database schema.
 - Built the initial dbt staging SQL model `models/staging/stg_telemetry.sql` to clean and cast the raw variant JSON.
 
+## Day 6
+- Implemented robust JSON parsing logic in `stg_telemetry.sql` using Snowflake's `TRY_PARSE_JSON` function.
+- Structured staging queries into a parser CTE to safely process string-formatted Kafka streams.

@@ -33,3 +33,8 @@
 ## Day 6
 - Implemented robust JSON parsing logic in `stg_telemetry.sql` using Snowflake's `TRY_PARSE_JSON` function.
 - Structured staging queries into a parser CTE to safely process string-formatted Kafka streams.
+
+## Day 7
+- Refined `stg_telemetry.sql` to standardize timestamps to the `TIMESTAMP_NTZ` data type.
+- Implemented null cleaning filters, defaulting missing telemetry readings to optimal transport parameters (5°C, 85% humidity).
+- Enforced data integrity constraints by discarding records lacking critical identification properties.

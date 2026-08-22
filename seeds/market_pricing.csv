@@ -1,0 +1,5 @@
+market_id,market_name,transit_hours,price_premium,price_standard,price_substandard,rerouting_cost
+MKT_001,Chicago,24,120.00,90.00,50.00,150.00
+MKT_002,New York,48,135.00,100.00,60.00,300.00
+MKT_003,Houston,36,115.00,85.00,45.00,200.00
+MKT_004,Los Angeles,12,110.00,80.00,40.00,100.00

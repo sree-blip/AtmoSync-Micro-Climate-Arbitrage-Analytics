@@ -38,3 +38,8 @@
 - Refined `stg_telemetry.sql` to standardize timestamps to the `TIMESTAMP_NTZ` data type.
 - Implemented null cleaning filters, defaulting missing telemetry readings to optimal transport parameters (5°C, 85% humidity).
 - Enforced data integrity constraints by discarding records lacking critical identification properties.
+
+## Day 8
+- Created seed file `seeds/market_pricing.csv` containing transit times and prices per quality grade for candidate markets.
+- Built the integrated staging model `models/staging/stg_telemetry_joined.sql` performing a cross join between telemetry and pricing metadata.
+

@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  - name: stg_telemetry
+    description: Staged and cleaned telemetry log records from container sensors.
+    columns:
+      - name: sequence_id
+        description: Sequential log entry identifier.
+        tests:
+          - unique
+          - not_null
+      - name: sensor_id
+        description: Identifier for the container sensor.
+        tests:
+          - not_null
+      - name: reading_time
+        description: Standardized UTC timestamp of telemetry record.
+        tests:
+          - not_null
+      - name: temperature_c
+        description: Temperature reading in Celsius.
+        tests:
+          - not_null
+      - name: humidity_pct
+        description: Humidity reading as a percentage.
+        tests:
+          - not_null
+      - name: vibration_g
+        description: Vibration reading in G-force.
+        tests:
+          - not_null
+
+  - name: stg_telemetry_joined
+    description: Cartesian cross join of sensor telemetry records and candidate markets pricing.
+    tests:
+      # Verify the combination of sequence_id and market_id is unique across the joined rows
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - sequence_id
+              - market_id
+    columns:
+      - name: sequence_id
+        description: Telemetry log entry sequence ID.
+        tests:
+          - not_null
+      - name: sensor_id
+        description: Container sensor ID.
+        tests:
+          - not_null
+      - name: market_id
+        description: Candidate market ID.
+        tests:
+          - not_null
+      - name: market_name
+        description: Candidate market city location.
+        tests:
+          - not_null

@@ -43,3 +43,12 @@
 - Created seed file `seeds/market_pricing.csv` containing transit times and prices per quality grade for candidate markets.
 - Built the integrated staging model `models/staging/stg_telemetry_joined.sql` performing a cross join between telemetry and pricing metadata.
 
+## Day 9
+- Created dbt testing configurations in `models/staging/schema.yml`.
+- Applied standard tests (`unique`, `not_null`) for staging fields in `stg_telemetry`.
+- Configured custom multi-column test (`dbt_utils.unique_combination_of_columns`) to validate cross-joined primary keys in `stg_telemetry_joined`.
+
+## Day 10
+- Drafted the staging pipeline testing framework in `docs/staging_pipeline_verification.md`.
+- Outlined dbt execution commands for loading seeds, running models, and executing tests.
+- Designed Snowflake SQL manual assertions to check payload parsing, default parameters, and join boundaries.

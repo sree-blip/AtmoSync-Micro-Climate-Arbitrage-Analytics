@@ -52,3 +52,9 @@
 - Drafted the staging pipeline testing framework in `docs/staging_pipeline_verification.md`.
 - Outlined dbt execution commands for loading seeds, running models, and executing tests.
 - Designed Snowflake SQL manual assertions to check payload parsing, default parameters, and join boundaries.
+
+## Day 11
+- Created the first analytics marts SQL model `models/marts/fct_spoilage_rates.sql`.
+- Implemented step-by-step telemetry time difference calculations using SQL window functions.
+- Coded decay multiplier equations using variables configured in `dbt_project.yml`.
+- Implemented cumulative sum equations to track accumulated degradation, bounded between `0.0` and `1.0`.

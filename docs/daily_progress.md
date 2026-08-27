@@ -58,3 +58,9 @@
 - Implemented step-by-step telemetry time difference calculations using SQL window functions.
 - Coded decay multiplier equations using variables configured in `dbt_project.yml`.
 - Implemented cumulative sum equations to track accumulated degradation, bounded between `0.0` and `1.0`.
+
+## Day 12
+- Created predictive analytics SQL model `models/marts/fct_distance_vs_spoilage.sql`.
+- Joined the current spoilage rates model with candidate market cross-join datasets.
+- Formulated the equations to project additional transit decay during remaining container transit hours.
+- Modeled the predicted quality index of avocados upon arrival at candidate destinations.

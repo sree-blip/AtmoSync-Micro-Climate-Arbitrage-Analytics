@@ -64,3 +64,10 @@
 - Joined the current spoilage rates model with candidate market cross-join datasets.
 - Formulated the equations to project additional transit decay during remaining container transit hours.
 - Modeled the predicted quality index of avocados upon arrival at candidate destinations.
+
+## Day 13
+- Created financial modeling marts SQL model `models/marts/fct_arbitrage_margins.sql`.
+- Classified predicted arrival quality scores into Premium, Standard, and Substandard pricing tiers.
+- Formulated container-level cargo value estimations based on box-price grades.
+- Coded window function queries to pull original market baseline values across candidate comparisons.
+- Implemented net Spoilage Arbitrage calculation rules factoring in rerouting cost penalties.

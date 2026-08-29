@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: raw
-    database: RAW
-    schema: TELEMETRY
+    database: ATMOSYNC_DB
+    schema: RAW
     tables:
-      - name: raw_container_telemetry
+      - name: RAW_KAFKA_TELEMETRY
         description: Raw JSON telemetry log records streamed from the IoT container sensors.

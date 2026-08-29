@@ -71,3 +71,13 @@
 - Formulated container-level cargo value estimations based on box-price grades.
 - Coded window function queries to pull original market baseline values across candidate comparisons.
 - Implemented net Spoilage Arbitrage calculation rules factoring in rerouting cost penalties.
+- Connected the dbt project to the live Snowflake warehouse using credentials from Member 2.
+- Aligned sources.yml and stg_telemetry.sql to match the raw database tables and JSON payload keys.
+- Successfully ran dbt seed, dbt run, and passed all 12 data validation tests against live data.
+
+## Day 14
+- Created the container tracking dimension SQL model `models/marts/dim_containers.sql`.
+- Modeled container metrics tracking total log counts, first/last contact, and current cargo status (Healthy, At Risk, Spoiled).
+- Built the automated Fact Alert model `models/marts/fct_arbitrage_alerts.sql`.
+- Configured dynamic threshold filtering using variables from `dbt_project.yml`.
+- Coded window ranking query loops to select the single best candidate market routing recommendation per container event.

@@ -12,11 +12,23 @@ parsed as (
 
 cleaned as (
     select
-        json_payload:event_id::varchar as sequence_id,
-        json_payload:container_id::varchar as sensor_id,
+        -- Coalesce to support both the streaming engineer's keys (sequence_id/sensor_id) 
+        -- and the warehouse engineer's dummy test keys (event_id/container_id)
+        coalesce(
+            json_payload:sequence_id::varchar, 
+            json_payload:event_id::varchar
+        ) as sequence_id,
         
-        -- Standardize to TIMESTAMP_NTZ (non-timezone aware UTC) to prevent time-offset calculation issues
-        cast(ingested_at as timestamp_ntz) as reading_time,
+        coalesce(
+            json_payload:sensor_id::varchar, 
+            json_payload:container_id::varchar
+        ) as sensor_id,
+        
+        -- Coalesce timestamp: use payload timestamp if available, fallback to Snowflake ingestion time
+        coalesce(
+            cast(json_payload:timestamp::varchar as timestamp_ntz),
+            cast(ingested_at as timestamp_ntz)
+        ) as reading_time,
         
         -- Clean nulls by defaulting missing readings to optimal transport parameters (5.0C temp, 85% hum, 0.0G vib)
         coalesce(json_payload:temperature::float, 5.0) as temperature_c,
@@ -24,8 +36,8 @@ cleaned as (
         coalesce(json_payload:vibration::float, 0.0) as vibration_g
     from parsed
     -- Enforce data integrity by discarding records missing critical identification logs
-    where json_payload:container_id is not null 
-      and ingested_at is not null
+    where coalesce(json_payload:sensor_id::varchar, json_payload:container_id::varchar) is not null 
+      and coalesce(cast(json_payload:timestamp::varchar as timestamp_ntz), cast(ingested_at as timestamp_ntz)) is not null
 )
 
 select * from cleaned

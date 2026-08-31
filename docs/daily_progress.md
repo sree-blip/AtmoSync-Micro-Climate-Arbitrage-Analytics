@@ -81,3 +81,9 @@
 - Built the automated Fact Alert model `models/marts/fct_arbitrage_alerts.sql`.
 - Configured dynamic threshold filtering using variables from `dbt_project.yml`.
 - Coded window ranking query loops to select the single best candidate market routing recommendation per container event.
+
+## Day 15
+- Created analytical marts documentation in `models/marts/schema.yml`.
+- Documented column specifications and definitions for all dimension and fact models in the marts layer.
+- Added data quality constraints (unique and not_null tests) for the primary keys of the analytical marts.
+- Verified the complete staging-to-marts compilation pipeline against Snowflake.

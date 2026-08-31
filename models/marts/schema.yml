@@ -1,0 +1,129 @@
+version: 2
+
+models:
+  - name: dim_containers
+    description: Dimension table summarizing container-level activity metrics and current cargo status.
+    columns:
+      - name: sensor_id
+        description: Unique identifier for the container sensor.
+        tests:
+          - unique
+          - not_null
+      - name: total_reading_count
+        description: Total number of telemetry logs received for this container.
+        tests:
+          - not_null
+      - name: first_reading_time
+        description: Timestamp of the first telemetry reading received.
+        tests:
+          - not_null
+      - name: last_reading_time
+        description: Timestamp of the most recent telemetry reading received.
+        tests:
+          - not_null
+      - name: last_recorded_quality_index
+        description: The latest computed quality index score (between 0.0 and 1.0) of the cargo.
+      - name: current_cargo_status
+        description: Overall cargo health classification (Healthy, At Risk, or Spoiled).
+        tests:
+          - not_null
+
+  - name: fct_spoilage_rates
+    description: Fact table containing micro-climate decay calculations and cumulative degradation over time.
+    columns:
+      - name: sequence_id
+        description: Log event sequence identifier.
+        tests:
+          - not_null
+      - name: sensor_id
+        description: Container sensor identifier.
+        tests:
+          - not_null
+      - name: reading_time
+        description: Telemetry log timestamp.
+        tests:
+          - not_null
+      - name: decay_multiplier
+        description: Computed exponential decay rate multiplier based on micro-climate readings.
+        tests:
+          - not_null
+      - name: quality_index
+        description: Remaining cargo quality index (bounded between 0.0 and 1.0).
+        tests:
+          - not_null
+
+  - name: fct_distance_vs_spoilage
+    description: Fact table containing projected decay and remaining quality levels upon arrival at candidate markets.
+    columns:
+      - name: sequence_id
+        description: Telemetry sequence identifier.
+        tests:
+          - not_null
+      - name: sensor_id
+        description: Container sensor identifier.
+        tests:
+          - not_null
+      - name: market_id
+        description: Candidate market identifier.
+        tests:
+          - not_null
+      - name: transit_hours
+        description: Remaining transit time to the candidate destination in hours.
+        tests:
+          - not_null
+      - name: predicted_arrival_quality
+        description: Predicted cargo quality index score upon arrival at the destination.
+        tests:
+          - not_null
+
+  - name: fct_arbitrage_margins
+    description: Fact table modeling estimated cargo value, original destination baseline value, and net arbitrage margins.
+    columns:
+      - name: sequence_id
+        description: Telemetry sequence identifier.
+        tests:
+          - not_null
+      - name: sensor_id
+        description: Container sensor identifier.
+        tests:
+          - not_null
+      - name: market_id
+        description: Candidate market identifier.
+        tests:
+          - not_null
+      - name: cargo_value
+        description: Total estimated cargo value at the destination market based on predicted quality grade.
+        tests:
+          - not_null
+      - name: original_market_value
+        description: Baseline cargo value if shipment proceeds to original default destination (New York).
+        tests:
+          - not_null
+      - name: spoilage_arbitrage
+        description: Net financial margin improvement of rerouting to candidate market, minus routing costs.
+        tests:
+          - not_null
+
+  - name: fct_arbitrage_alerts
+    description: Fact table filtering high-payout rerouting opportunities that exceed project margin thresholds.
+    columns:
+      - name: sequence_id
+        description: Telemetry sequence identifier.
+        tests:
+          - not_null
+      - name: sensor_id
+        description: Container sensor identifier.
+        tests:
+          - not_null
+      - name: recommended_market_id
+        description: The recommended market identifier yielding the highest arbitrage profit.
+        tests:
+          - not_null
+      - name: recommended_market_name
+        description: The recommended market city name.
+        tests:
+          - not_null
+      - name: net_arbitrage_margin
+        description: Net Spoilage Arbitrage payout for the recommended reroute.
+        tests:
+          - not_null

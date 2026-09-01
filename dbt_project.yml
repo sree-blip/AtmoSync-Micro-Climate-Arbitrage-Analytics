@@ -21,11 +21,12 @@ clean-targets:
 # Configuring model folders and default materializations
 models:
   atmosync_dbt:
-    +materialized: view
     staging:
       +schema: staging
+      +materialized: view
     marts:
       +schema: marts
+      +materialized: table
 
 # Project-wide variables for decay math and business logic thresholds
 vars:

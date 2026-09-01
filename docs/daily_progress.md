@@ -87,3 +87,9 @@
 - Documented column specifications and definitions for all dimension and fact models in the marts layer.
 - Added data quality constraints (unique and not_null tests) for the primary keys of the analytical marts.
 - Verified the complete staging-to-marts compilation pipeline against Snowflake.
+
+## Day 16
+- Optimized dbt execution configurations in `dbt_project.yml`.
+- Configured staging models as views and materialized marts models as physical tables to pre-compute window functions.
+- Created custom test macro `macros/test_assert_range.sql` to efficiently enforce boundary ranges.
+- Applied range constraint tests to quality index fields in `models/marts/schema.yml`.

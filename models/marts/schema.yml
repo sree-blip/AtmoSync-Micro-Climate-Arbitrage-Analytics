@@ -51,6 +51,10 @@ models:
         description: Remaining cargo quality index (bounded between 0.0 and 1.0).
         tests:
           - not_null
+          - assert_range:
+              arguments:
+                min_val: 0.0
+                max_val: 1.0
 
   - name: fct_distance_vs_spoilage
     description: Fact table containing projected decay and remaining quality levels upon arrival at candidate markets.

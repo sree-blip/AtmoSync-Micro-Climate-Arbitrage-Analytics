@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='sequence_id'
+    )
+}}
+
 with source as (
     select * from {{ source('raw', 'RAW_KAFKA_TELEMETRY') }}
 ),
@@ -38,6 +45,11 @@ cleaned as (
     -- Enforce data integrity by discarding records missing critical identification logs
     where coalesce(json_payload:sensor_id::varchar, json_payload:container_id::varchar) is not null 
       and coalesce(cast(json_payload:timestamp::varchar as timestamp_ntz), cast(ingested_at as timestamp_ntz)) is not null
+
+    {% if is_incremental() %}
+    -- Filter to process only newly ingested records during incremental execution
+    and coalesce(cast(json_payload:timestamp::varchar as timestamp_ntz), cast(ingested_at as timestamp_ntz)) > (select max(reading_time) from {{ this }})
+    {% endif %}
 )
 
 select * from cleaned

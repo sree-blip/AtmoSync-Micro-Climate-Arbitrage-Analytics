@@ -93,3 +93,9 @@
 - Configured staging models as views and materialized marts models as physical tables to pre-compute window functions.
 - Created custom test macro `macros/test_assert_range.sql` to efficiently enforce boundary ranges.
 - Applied range constraint tests to quality index fields in `models/marts/schema.yml`.
+
+## Day 17
+- Finalized incremental materialization in `models/staging/stg_telemetry.sql` to support high-throughput stream upserts.
+- Created BI reporting view `models/marts/rpt_container_health_summary.sql` for container health monitoring.
+- Created BI reporting view `models/marts/rpt_arbitrage_opportunities.sql` for trader rerouting dashboard panels.
+- Created macro `macros/grant_select_on_schemas.sql` to manage BI developer read access permissions in Snowflake.

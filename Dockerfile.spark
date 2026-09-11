@@ -1,0 +1,9 @@
+FROM apache/spark:3.5.0
+
+USER root
+RUN pip install pyspark
+
+WORKDIR /app
+COPY spark_window_analytics.py /app/spark_window_analytics.py
+
+CMD ["spark-submit", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0", "spark_window_analytics.py"]

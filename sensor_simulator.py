@@ -1,36 +1,51 @@
 import json
-import random
 import time
+import random
+import os
 from datetime import datetime, timezone
+from kafka import KafkaProducer
 
-SENSOR_IDS = ["SENSOR_001", "SENSOR_002", "SENSOR_003", "SENSOR_004"]
-OUTPUT_FILE = "sensor_data.json"
-TOTAL_LIMIT = 50000  # Exact 50,000 records limit
+# Kafka broker setup
+KAFKA_SERVER = os.getenv("KAFKA_SERVER", "localhost:9092")
+TOPIC = "climate-sensor-data"
 
-def generate_sensor_data(seq_id):
-    return {
-        "sequence_id": seq_id,
-        "sensor_id": random.choice(SENSOR_IDS),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "temperature": round(random.uniform(20.0, 45.0), 2),
-        "humidity": round(random.uniform(30.0, 85.0), 2),
-        "vibration": round(random.uniform(0.1, 5.0), 3)
-    }
+def create_kafka_producer():
+    return KafkaProducer(
+        bootstrap_servers=KAFKA_SERVER,
+        value_serializer=lambda v: json.dumps(v).encode("utf-8")
+    )
+
+def generate_telemetry_data():
+    producer = create_kafka_producer()
+    sensors = [f"SENSOR_{i}" for i in range(101, 111)]
+    
+    total_records = 50000
+    print(f"🚀 Day 11: Starting High-Frequency Telemetry Stream ({total_records} records)...")
+    print("⚡ Frequency Scaled to 10 Hz (0.1s delay between events)\n")
+
+    for i in range(1, total_records + 1):
+        sensor_id = random.choice(sensors)
+        
+        # Telemetry metrics payload
+        payload = {
+            "sensor_id": sensor_id,
+            "temperature": round(random.uniform(20.0, 35.0), 2),
+            "humidity": round(random.uniform(40.0, 80.0), 2),
+            "vibration": round(random.uniform(0.1, 1.0), 2),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+        # Send event to Kafka topic
+        producer.send(TOPIC, payload)
+
+        if i % 500 == 0:
+            print(f"📡 Sent {i}/{total_records} events to Kafka...")
+
+        # Day 11 Scaling: 0.1 seconds delay (10 events/sec real-time condition)
+        time.sleep(0.1)
+
+    producer.flush()
+    print("\n✅ Continuous high-frequency telemetry stream completed successfully!")
 
 if __name__ == "__main__":
-    print(f"Starting IoT Data Generation... Goal: {TOTAL_LIMIT} records.")
-    start_time = time.time()
-    
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        for i in range(1, TOTAL_LIMIT + 1):
-            data = generate_sensor_data(i)
-            f.write(json.dumps(data) + "\n")
-            
-            # Prathi 5,000 records ki progress update terminal lo chupisthundhi
-            if i % 5000 == 0 or i == TOTAL_LIMIT:
-                print(f"Progress: {i}/{TOTAL_LIMIT} records generated ({round((i/TOTAL_LIMIT)*100)}%)...")
-
-    end_time = time.time()
-    time_taken = round(end_time - start_time, 2)
-    print(f"\nSuccessfully generated {TOTAL_LIMIT} records in {OUTPUT_FILE}!")
-    print(f"Total time taken: {time_taken} seconds.")
+    generate_telemetry_data()

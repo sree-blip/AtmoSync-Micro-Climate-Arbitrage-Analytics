@@ -40,7 +40,9 @@ cleaned as (
         -- Clean nulls by defaulting missing readings to optimal transport parameters (5.0C temp, 85% hum, 0.0G vib)
         coalesce(json_payload:temperature::float, 5.0) as temperature_c,
         coalesce(json_payload:humidity::float, 85.0) as humidity_pct,
-        coalesce(json_payload:vibration::float, 0.0) as vibration_g
+        coalesce(json_payload:vibration::float, 0.0) as vibration_g,
+        coalesce(json_payload:latitude::float, 0.0) as latitude,
+        coalesce(json_payload:longitude::float, 0.0) as longitude
     from parsed
     -- Enforce data integrity by discarding records missing critical identification logs
     where coalesce(json_payload:sensor_id::varchar, json_payload:container_id::varchar) is not null 

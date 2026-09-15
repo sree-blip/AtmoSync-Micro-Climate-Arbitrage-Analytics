@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY anomaly_simulator.py .
-COPY kafka_producer.py .
+# Copy updated sensor simulator script
+COPY sensor_simulator.py .
 
-CMD ["python", "kafka_producer.py"]
+CMD ["python", "sensor_simulator.py"]

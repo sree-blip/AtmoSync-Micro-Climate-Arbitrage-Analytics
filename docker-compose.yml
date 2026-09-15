@@ -27,6 +27,7 @@ services:
       context: .
       dockerfile: Dockerfile.producer
     container_name: producer-service
+    command: python sensor_simulator.py
     depends_on:
       - kafka
     environment:

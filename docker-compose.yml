@@ -27,10 +27,15 @@ services:
       context: .
       dockerfile: Dockerfile.producer
     container_name: producer-service
+    command: python sensor_simulator.py
     depends_on:
       - kafka
     environment:
       - KAFKA_SERVER=kafka:29092
+      - STREAM_DELAY=0.005
+      - TOTAL_RECORDS=50000
+      - TEMP_ANOMALY_RATIO=30
+      - ROUTE_ANOMALY_RATIO=50
 
   spark-analytics:
     build:
